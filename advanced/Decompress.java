@@ -19,15 +19,22 @@ public class Decompress {
         int i = 0;
         int n = str.length();
         while(i < n) {
-            if(Character.isDigit(str.charAt(i)) && i+1 < n && str.charAt(i+1) == '[') {
-                int beg = i+1;
+            int j = i;
+            int times = 0;
+            while(j < n && Character.isDigit(str.charAt(j))) {
+                times = times * 10 + Character.digit(str.charAt(j), 10);
+                j++;
+            }
+            if(times > 0 && j < n && str.charAt(j) == '[') {
+                int beg = j;
                 int end = findEnd(str, beg+1);
                 if(end>beg+1) {
-                    sb.append(dup(decomp(str.substring(beg+1, end)), Character.digit(str.charAt(i), 10)));
+                    sb.append(dup(decomp(str.substring(beg+1, end)), times));
                     i = end+1;
                 } else {
-                    sb.append(str.substring(i, Math.max(beg, end)+1));
-                    i = Math.max(beg, end)+1;
+                    j = Math.max(beg, end)+1;
+                    sb.append(str.substring(i, j));
+                    i = j;
                 }
                 continue;
             }
@@ -60,6 +67,6 @@ public class Decompress {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Decompress().decomp("2[3[a]b]"));
+        System.out.println(new Decompress().decomp("2[13[a]b]"));
     }
 }
